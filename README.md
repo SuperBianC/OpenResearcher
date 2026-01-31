@@ -27,7 +27,8 @@ sudo apt install -y openjdk-21-jdk
 ### Python Dependencies
 
 ```bash
-uv sync
+uv venv --python 3.12
+source .venv/bin/activate
 ```
 
 ### Tevatron (for BrowseComp-Plus local search)
@@ -35,6 +36,7 @@ uv sync
 ```bash
 git clone https://github.com/texttron/tevatron.git
 cd tevatron
+uv pip install -e .
 cd ..
 ```
 
