@@ -30,37 +30,33 @@ Evaluation framework for deep research agents with local/remote search engines a
 - [Evaluation](#evaluation)
 
 ## 🛠 Environment Setup
-### Prerequisites
-+ Python 3.12 (recommended)
-
 ### Installation 
 ```bash
 sudo apt install -y openjdk-21-jdk
 uv venv --python 3.12
 source .venv/bin/activate
-uv pip install -e .
 
 # install tevatron for BrowserComp-plus 
 git clone https://github.com/texttron/tevatron.git
 cd tevatron
 uv pip install -e .
 cd ..
+
+# install all dependencies automatically
+uv pip install -e .
 ```
 
-### Data Preparation (Recommended) TODO: update
+### DeepResearch Benchmarks Preparation
 
-Run the setup script to install all dependencies automatically:
+Run the setup script to download all deepresearch benchmarks automatically:
 
 ```bash
 bash setup.sh
 ```
 
-This script will:
-- Install Python 3.12 virtual environment using `uv`
-- Install all Python dependencies
-- Install Tevatron for local search
-- Download Lucene JARs
-- Download corpus and indexes (optional, interactive)
+**This script will:**
+- ✅ Verify Python 3.12 virtual environment and automatically install any missing dependencies
+- ✅ Downlaod all benchmark datasets from HuggingFace and set up the directory structure
 
 ## Configuration
 
