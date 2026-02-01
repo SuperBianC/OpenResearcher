@@ -49,7 +49,7 @@ echo ""
 # Check if using browsecomp-plus dataset (needs local data path)
 if [ "$DATASET_NAME" = "browsecomp-plus" ]; then
     DATA_PATH="${SCRIPT_DIR}/Tevatron/browsecomp-plus/data/*.parquet"
-    echo "Using local BrowseComp+ dataset: $DATA_PATH"
+    echo "Using local BrowseComp-Plus dataset: $DATA_PATH"
     echo ""
 
     python deploy_agent.py \
@@ -65,7 +65,7 @@ if [ "$DATASET_NAME" = "browsecomp-plus" ]; then
 else
     # HuggingFace datasets or OpenAI BrowseComp (no local data_path needed)
     echo "Using dataset: $DATASET_NAME"
-    echo "Available datasets: browsecomp, hle, gaia, webwalkerqa, webwalkerqa_ref, xbench, seal, seal_ref"
+    echo "Available datasets: browsecomp, gaia, xbench, seal, seal_ref"
     echo ""
 
     python deploy_agent.py \

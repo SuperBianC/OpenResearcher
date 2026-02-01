@@ -6,14 +6,12 @@ This document provides an overview of the benchmarks used for evaluation in this
 
 | Benchmark | Dataset Key | Size | Language | Search Backend | Description |
 |-----------|-------------|------|----------|----------------|-------------|
-| **BrowseComp-Plus** | `browsecomp_plus` | 830 | EN | local | Deep-research benchmark isolating retriever and LLM agent effects |
-| **HLE** | `hle` | 2,158 | EN | serper | Multiple choice questions from Humanity's Last Exam |
-| **GAIA-text** | `gaia` | 103 | EN | serper | Text-only subset of GAIA benchmark (dev split) |
-| **WebWalkerQA** | `webwalkerqa` | 680 | EN | serper | Web navigation and interaction questions (test split) |
-| **WebWalkerQA-ref** | `webwalkerqa_ref` | 680 | EN | serper | With reference URLs in question |
-| **XBench** | `xbench` | 100 | ZH | serper | DeepSearch benchmark with encrypted test cases |
-| **SealQA** | `seal` | 111 | EN | serper | Hardest subset of SealQA questions |
-| **SealQA-ref** | `seal_ref` | 111 | EN | serper | With reference URLs |
+| **[BrowseComp-Plus](https://arxiv.org/abs/2508.06600)** | `browsecomp_plus` | 830 | EN | local | Deep-research benchmark from BrowseComp isolating retriever and LLM agent effects |
+| **[BrowseComp](https://arxiv.org/abs/2504.12516)** | `browsecomp` | 103 | EN | serper | A Simple Yet Challenging Benchmark for Browsing Agents |
+| **[GAIA-text](https://arxiv.org/abs/2311.12983)** | `gaia` | 103 | EN | serper | Text-only subset of GAIA benchmark (dev split) |
+| **[xbench-DeepResearch](https://github.com/THUDM/xbench)** | `xbench` | 100 | ZH | serper | DeepSearch benchmark with encrypted test cases |
+| **[SEAL-0](https://arxiv.org/abs/2506.01062)** | `seal` | 111 | EN | serper | Hardest subset of SealQA questions |
+
 
 ## Usage
 

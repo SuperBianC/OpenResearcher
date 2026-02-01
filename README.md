@@ -20,6 +20,7 @@
 Evaluation framework for deep research agents with local/remote search engines and multiple LLM backends.
 
 ## 📋 Table of Contents
+# TODO: update contents
 
 - [🛠 Environment Setup](#environment-setup)
 - [Data Preparation](#data-preparation)
@@ -30,6 +31,11 @@ Evaluation framework for deep research agents with local/remote search engines a
 - [Evaluation](#evaluation)
 
 ## 🛠 Environment Setup
+We run this repo on the following setup:
++ 8 * A100 80G Nvidia GPUs
++ Linux operating system
+
+Other hardware setups can also work, but remember to modify the corresponding parameters.
 ### Installation 
 ```bash
 sudo apt install -y openjdk-21-jdk
@@ -48,7 +54,8 @@ uv pip install -e .
 
 ### DeepResearch Benchmarks Preparation
 
-Run the setup script to download all deepresearch benchmarks automatically:
+Run the setup script to automatically download the **[BrowserComp-Plus](https://arxiv.org/abs/2508.06600)** benchmark.  
+Other benchmarks, including **[BrowserComp](https://arxiv.org/abs/2504.12516)**, **[GAIA](https://arxiv.org/abs/2311.12983)**, **[xbench-DeepResearch](https://github.com/THUDM/xbench)** and **[SEAL-0](https://arxiv.org/abs/2506.01062)**, will be set up automatically when they are first used.
 
 ```bash
 bash setup.sh
@@ -56,11 +63,11 @@ bash setup.sh
 
 **This script will:**
 - ✅ Verify Python 3.12 virtual environment and automatically install any missing dependencies
-- ✅ Downlaod all benchmark datasets from HuggingFace and set up the directory structure
+- ✅ Downlaod BrowserComp-Plus dataset from HuggingFace and set up the directory structure
 
-## Configuration
+Please see [benchmarks.md](assets/docs/benchmarks.md) for more info about these deepresearch benchmarks.
 
-### API Keys
+## 🔍 Configuration
 
 Copy the template and configure your API keys:
 
@@ -85,6 +92,7 @@ Complete workflow using local Dense search:
 
 ```bash
 # Terminal 1: Start local Dense search service on port 8000
+# Embedding model (Qwen3-Embedding-8B) will be deployed on GPUs 7
 bash scripts/start_search_service.sh dense 8000
 
 # Terminal 2: Start vLLM servers (requires 4 GPUs)
@@ -92,13 +100,13 @@ bash scripts/start_search_service.sh dense 8000
 bash scripts/start_nemotron_servers.sh 2 8001 0,1,2,3
 
 # Terminal 3: Run agent
-bash run_agent.sh results/browsecomp_plus/Researcher_dense 8001 2 browsecomp_plus local OpenResearcher/Nemotron-3-Nano-30B-A3B
+bash run_agent.sh results/browsecomp_plus/OpenResearcher_dense 8001 2 browsecomp_plus local OpenResearcher/Nemotron-3-Nano-30B-A3B
 ```
 
 What this does:
-- Deploys Dense search on port 8000 as virtual search engine
+- Deploys Dense retriever service on port 8000 as search engine
 - Launches 2 vLLM servers (ports 8001, 8002) with TP=2 across 4 GPUs
-- Runs agent with load balancing across both servers
+- Runs deepresearch agent with load balancing across both servers
 
 ### Example 2: Using Serper API (No Local Search Needed)
 
@@ -116,19 +124,23 @@ bash run_agent.sh results/gaia/OpenResearcher_serper 8001 2 gaia serper OpenRese
 - `local` - Use local BM25/Dense search service (for BrowseComp-Plus)
 - `serper` - Use Serper Google Search API (for all other benchmarks)
 
-For other parameters, please refer to [assets/docs/parameter.md](assets/docs/parameter.md).
+For other parameters, refer to [parameter.md](assets/docs/parameter.md).
 
-## Benchmarks
+## Benchmark OpenResearcher
+We benchmark our OpenResearcher-30B-A3B using below deepresearch benchmarks: 
 
 | Benchmark | Dataset Key | Size | Language | Search Backend | Description |
 |-----------|-------------|------|----------|----------------|-------------|
-| **BrowseComp** | `browsecomp` | 1266 | EN | serper | OpenAI public browse benchmark |
-| **BrowseComp-Plus** | `browsecomp-plus` | 830 | EN | local | Deep-research benchmark isolating retriever and LLM agent effects |
-| **GAIA-text** | `gaia` | 103 | EN | serper | Text-only subset of GAIA benchmark (dev split) |
-| **XBench** | `xbench` | 100 | ZH | serper | DeepSearch benchmark with encrypted test cases |
-| **SealQA-ref** | `seal_ref` | 111 | EN | serper | With reference URLs |
+| **[BrowseComp-Plus](https://arxiv.org/abs/2508.06600)** | `browsecomp_plus` | 830 | EN | local | Deep-research benchmark from BrowseComp isolating retriever and LLM agent effects |
+| **[BrowseComp](https://arxiv.org/abs/2504.12516)** | `browsecomp` | 103 | EN | serper | A Simple Yet Challenging Benchmark for Browsing Agents |
+| **[GAIA-text](https://arxiv.org/abs/2311.12983)** | `gaia` | 103 | EN | serper | Text-only subset of GAIA benchmark (dev split) |
+| **[xbench-DeepResearch](https://github.com/THUDM/xbench)** | `xbench` | 100 | ZH | serper | DeepSearch benchmark with encrypted test cases |
+| **[SEAL-0](https://arxiv.org/abs/2506.01062)** | `seal` | 111 | EN | serper | Hardest subset of SealQA questions |
+ncrypted test cases |
+| **SEAL-0** | `seal_ref` | 111 | EN | serper | With reference URLs |
 
-For other benchmarks, please refer to [assets/docs](assets/docs).
+For more info about these deepresearch benchmarks, see [benchmarks.md](assets/docs/benchmarks.md) 
+
 
 ### Quick Commands
 
