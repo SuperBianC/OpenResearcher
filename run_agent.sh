@@ -2,13 +2,12 @@
 # Quick start script for running agent with multiple vLLM servers
 # Usage: ./run_agent.sh [output_dir] [base_port] [num_servers] [dataset_name] [browser_backend] [model_path]
 
-OUTPUT_DIR=${1:-"results/browsecomp/output"}
+OUTPUT_DIR=${1:-"results/browsecomp-plus/OpenResearcher_dense"}
 BASE_PORT=${2:-8002}
 NUM_SERVERS=${3:-3}
-DATASET_NAME=${4:-"browsecomp"}
+DATASET_NAME=${4:-"browsecomp-plus"}
 BROWSER_BACKEND=${5:-"local"}
-# MODEL=${6:-"OpenResearcher/Nemotron-3-Nano-30B-A3B"}
-MODEL=${6:-"/home/ubuntu/jianwen-us-midwest-1/panlu/model/nano_v3_search_correct_only_347_steps"}
+MODEL=${6:-"OpenResearcher/Nemotron-3-Nano-30B-A3B"}
 
 
 SEARCH_URL="http://localhost:8000"
