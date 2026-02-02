@@ -108,7 +108,6 @@ fi
 
 echo ""
 echo -e "${GREEN}Starting uvicorn server...${NC}"
-echo "Access the service at: http://localhost:${PORT}"
 echo "Press Ctrl+C to stop"
 echo ""
 

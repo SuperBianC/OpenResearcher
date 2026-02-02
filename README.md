@@ -20,15 +20,21 @@
 Evaluation framework for deep research agents with local/remote search engines and multiple LLM backends.
 
 ## 📋 Table of Contents
-# TODO: update contents
 
-- [🛠 Environment Setup](#environment-setup)
-- [Data Preparation](#data-preparation)
-- [Installation](#installation)
-- [Configuration](#configuration)
-- [Get Started](#get-started)
-- [Benchmarks](#benchmarks)
-- [Evaluation](#evaluation)
+- [🛠 Environment Setup](#-environment-setup)
+  - [Installation](#installation)
+  - [DeepResearch Benchmarks Preparation](#deepresearch-benchmarks-preparation)
+- [🔍 Configuration](#-configuration)
+- [🚀 Get Started](#-get-started)
+  - [Example 1: BrowseComp-Plus with Local Search Engine](#example-1-browsecomp-plus-with-local-search-engine)
+  - [Example 2: Using Serper API (No Local Search Needed)](#example-2-using-serper-api-no-local-search-needed)
+  - [Evaluation](#evaluation)
+- [🔬 Benchmark OpenResearcher](#-benchmark-openresearcher)
+  - [Quick Commands](#quick-commands)
+- [🤝 Core Contributors](#-core-contributors)
+- [🎓 Advisors](#-advisors)
+- [🚀 Contributing](#-contributing)
+- [📚 Citation](#-citation)
 
 ## 🛠 Environment Setup
 We run this repo on the following setup:
@@ -84,11 +90,11 @@ SERPER_API_KEY=your_key        # Get from: https://serper.dev/
 OPENAI_API_KEY=your_key        # Get from: https://platform.openai.com/api-keys
 ```
 
-## Get Started
+## 🚀 Get Started
 
 ### Example 1: BrowseComp-Plus with Local Search Engine
 
-Complete workflow using local Dense search:
+Complete evaluation using local Dense search (**note: only applicable for BrowserComp-Plus**):
 
 ```bash
 # Terminal 1: Start local Dense search service on port 8000
@@ -110,7 +116,7 @@ What this does:
 
 ### Example 2: Using Serper API (No Local Search Needed)
 
-Run with Serper Google Search API:
+Run with Serper Google Search API (**note: applicable to all benchmarks except BrowserComp-Plus**):
 
 ```bash
 # Terminal 1: Start vLLM servers (requires 4 GPUs)
@@ -126,7 +132,19 @@ bash run_agent.sh results/gaia/OpenResearcher_serper 8001 2 gaia serper OpenRese
 
 For other parameters, refer to [parameter.md](assets/docs/parameter.md).
 
-## Benchmark OpenResearcher
+### Evaluation
+
+After running experiments, evaluate results:
+
+```bash
+# eval on browsecomp_plus
+python eval.py --input_dir results/browsecomp_plus_dense/OpenResearcher
+
+# eval on gaia
+python eval.py --input_dir results/gaia/OpenResearcher_serper
+```
+
+## 🔬 Benchmark OpenResearcher
 We benchmark our OpenResearcher-30B-A3B using below deepresearch benchmarks: 
 
 | Benchmark | Dataset Key | Size | Language | Search Backend | Description |
@@ -137,7 +155,6 @@ We benchmark our OpenResearcher-30B-A3B using below deepresearch benchmarks:
 | **[xbench-DeepResearch](https://github.com/THUDM/xbench)** | `xbench` | 100 | ZH | serper | DeepSearch benchmark with encrypted test cases |
 | **[SEAL-0](https://arxiv.org/abs/2506.01062)** | `seal` | 111 | EN | serper | Hardest subset of SealQA questions |
 ncrypted test cases |
-| **SEAL-0** | `seal_ref` | 111 | EN | serper | With reference URLs |
 
 For more info about these deepresearch benchmarks, see [benchmarks.md](assets/docs/benchmarks.md) 
 
@@ -146,19 +163,23 @@ For more info about these deepresearch benchmarks, see [benchmarks.md](assets/do
 
 | Scenario | Command |
 |----------|---------|
+| **BrowseComp-Plus (BM25)** | `bash scripts/start_search_service.sh bm25 8000` then `bash run_agent.sh results/browsecomp-plus/OpenResearcher_bm25 8001 2 browsecomp-plus local OpenResearcher/Nemotron-3-Nano-30B-A3B` |
+| **BrowseComp-Plus (Qwen3-8B Dense Embeddings)** | `bash scripts/start_search_service.sh dense 8000` then `bash run_agent.sh results/browsecomp-plus/OpenResearcher_dense 8001 2 browsecomp-plus local OpenResearcher/Nemotron-3-Nano-30B-A3B` |
 | **BrowseComp** | `bash run_agent.sh results/browsecomp 8001 2 browsecomp serper OpenResearcher/Nemotron-3-Nano-30B-A3B` |
-| **BrowseComp+ (BM25)** | `bash scripts/start_search_service.sh bm25 8000` then `bash run_agent.sh results/browsecomp-plus/OpenResearcher_bm25 8001 2 browsecomp-plus local OpenResearcher/Nemotron-3-Nano-30B-A3B` |
-| **BrowseComp+ (Dense)** | `bash scripts/start_search_service.sh dense 8000` then `bash run_agent.sh results/browsecomp-plus/OpenResearcher_dense 8001 2 browsecomp-plus local OpenResearcher/Nemotron-3-Nano-30B-A3B` |
 | **GAIA** | `bash run_agent.sh results/gaia 8001 2 gaia serper OpenResearcher/Nemotron-3-Nano-30B-A3B` |
 | **XBench** | `bash run_agent.sh results/xbench 8001 2 xbench serper OpenResearcher/Nemotron-3-Nano-30B-A3B` |
 
-## Evaluation
-
-After running experiments, evaluate results:
-
+**Note:** Don't forget to evaluate your results using:  
 ```bash
-python eval.py --input_dir results/browsecomp_plus_dense/OpenResearcher
+python eval.py --input_dir [INPUT_DIR]
 ```
+## 🤝 Core Contributors
 
-## License
+##  🎓 Advisors
+
+##  🚀 Contributing
+
+
+##  📚 Citation
+
 

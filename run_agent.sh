@@ -47,7 +47,7 @@ echo "=========================================="
 echo ""
 
 # Check if using browsecomp-plus dataset (needs local data path)
-if [ "$DATASET_NAME" = "browsecomp-plus" ]; then
+if [ "$DATASET_NAME" = "browsecomp_plus" ]; then
     DATA_PATH="${SCRIPT_DIR}/Tevatron/browsecomp-plus/data/*.parquet"
     echo "Using local BrowseComp-Plus dataset: $DATA_PATH"
     echo ""
