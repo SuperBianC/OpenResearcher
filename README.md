@@ -19,7 +19,7 @@
 
 ## 💥 Introduction
 
-**OpenResearcher** is a fully open agentic large language model (30B-A3B) designed for **long-horizon deep research** scenarios. It achieves an impressive **54.8%** accuracy on [BrowseComp-Plus](https://huggingface.co/spaces/Tevatron/BrowseComp-Plus), surpassing performance of `GPT-4.1`, `Claude-Opus-4`, `Gemini-2.5-Pro`, `DeepSeek-R1`, `Tongyi-DeepResearch`. We **fully open-source** the complete training and evaluation recipe—including data, model, training methodology, and evaluation framework for everyone to progress deep research and develop state-of-the-art models efficiently.
+**OpenResearcher** is a fully open agentic large language model (30B-A3B) designed for **long-horizon deep research** scenarios. It achieves an impressive **54.8%** accuracy on [BrowseComp-Plus](https://huggingface.co/spaces/Tevatron/BrowseComp-Plus), surpassing performance of `GPT-4.1`, `Claude-Opus-4`, `Gemini-2.5-Pro`, `DeepSeek-R1` and `Tongyi-DeepResearch`. We **fully open-source** the training and evaluation recipe—including data, model, training methodology, and evaluation framework for everyone to progress deep research.
 <div align="center">
   <img src="assets/imgs/teaser.png" alt="OpenResearcher Teaser" width="100%" style="max-width: 850px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
 </div>
@@ -34,7 +34,7 @@
 
 
 ## ✨ Features
-+ 🔑 **Fully Open-Source Recipe** — We fully open-source our 96K high-quality [DeepResearch trajectory dataset](https://huggingface.co/datasets/OpenResearcher/OpenResearcher-Dataset) (mean turn > 50), the top-performing [30B-A3B model](https://huggingface.co/OpenResearcher/Nemotron-3-Nano-30B-A3B) trained on it, [distillation recipe](https://boiled-honeycup-4c7.notion.site/OpenResearcher-A-Fully-Open-Pipeline-for-Long-Horizon-Deep-Research-Trajectory-Synthesis-2f7e290627b5800cb3a0cd7e8d6ec0ea?source=copy_link), and a lightweight DeepResearch evaluation  [framework](https://github.com/Zhuofeng-Li/OpenResearcher/) to progress deep research.
++ 🔑 **Fully Open-Source Recipe** — We fully open-source our 96K high-quality [DeepResearch trajectory dataset](https://huggingface.co/datasets/OpenResearcher/OpenResearcher-Dataset) (mean turn > 50), the top-performing [30B-A3B model](https://huggingface.co/OpenResearcher/Nemotron-3-Nano-30B-A3B) trained on it, [distillation recipe](https://boiled-honeycup-4c7.notion.site/OpenResearcher-A-Fully-Open-Pipeline-for-Long-Horizon-Deep-Research-Trajectory-Synthesis-2f7e290627b5800cb3a0cd7e8d6ec0ea?source=copy_link), and a lightweight [DeepResearch evaluation framework](https://github.com/Zhuofeng-Li/OpenResearcher/) to progress deep research.
 
 + 💰 **Highly Scalable and Low-Cost** — We generate DeepResearch trajectories at massive scale using self-built retriever over a dedicated ~11B-token [corpus](https://huggingface.co/datasets/OpenResearcher/OpenResearcher-Corpus), eliminating the need for external Search APIs. This scalable retriever significantly reduces training costs and can be extended for RL training in the future.
 
