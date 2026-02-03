@@ -19,7 +19,7 @@
 
 ## 💥 Introduction
 
-**OpenResearcher** is a fully open agentic large language model (30B-A3B) designed for **long-horizon deep research** scenarios. It achieves an impressive **54.8%** accuracy on [BrowserComp-Plus](https://huggingface.co/spaces/Tevatron/BrowseComp-Plus), surpassing performance of `GPT-4.1`, `Claude-Opus-4`, `Gemini-2.5-Pro`, `DeepSeek-R1`, `Tongyi-DeepResearch`. We **fully open-source** the complete training and evaluation recipe—including data, model, training methodology, and evaluation pipeline for everyone to progress deep research and develop state-of-the-art models efficiently.
+**OpenResearcher** is a fully open agentic large language model (30B-A3B) designed for **long-horizon deep research** scenarios. It achieves an impressive **54.8%** accuracy on [BrowseComp-Plus](https://huggingface.co/spaces/Tevatron/BrowseComp-Plus), surpassing performance of `GPT-4.1`, `Claude-Opus-4`, `Gemini-2.5-Pro`, `DeepSeek-R1`, `Tongyi-DeepResearch`. We **fully open-source** the complete training and evaluation recipe—including data, model, training methodology, and evaluation pipeline for everyone to progress deep research and develop state-of-the-art models efficiently.
 <div align="center">
   <img src="assets/imgs/teaser.png" alt="OpenResearcher Teaser" width="100%" style="max-width: 850px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1);">
 </div>
@@ -70,7 +70,7 @@ sudo apt install -y openjdk-21-jdk
 uv venv --python 3.12
 source .venv/bin/activate
 
-# install tevatron for BrowserComp-plus 
+# install tevatron for BrowseComp-plus 
 git clone https://github.com/texttron/tevatron.git
 cd tevatron
 uv pip install -e .
@@ -82,8 +82,8 @@ uv pip install -e .
 
 ### DeepResearch Benchmarks Preparation
 
-Run the setup script to automatically download the **[BrowserComp-Plus](https://arxiv.org/abs/2508.06600)** benchmark.  
-Other benchmarks, including **[BrowserComp](https://arxiv.org/abs/2504.12516)**, **[GAIA](https://arxiv.org/abs/2311.12983)** and **[xbench-DeepResearch](https://github.com/THUDM/xbench)****, will be set up automatically when they are first used.
+Run the setup script to automatically download the **[BrowseComp-Plus](https://arxiv.org/abs/2508.06600)** benchmark.  
+Other benchmarks, including **[BrowseComp](https://arxiv.org/abs/2504.12516)**, **[GAIA](https://arxiv.org/abs/2311.12983)** and **[xbench-DeepResearch](https://github.com/THUDM/xbench)****, will be set up automatically when they are first used.
 
 ```bash
 bash setup.sh
@@ -91,7 +91,7 @@ bash setup.sh
 
 **This script will:**
 - ✅ Verify Python 3.12 virtual environment and automatically install any missing dependencies
-- ✅ Downlaod BrowserComp-Plus dataset from HuggingFace and set up the directory structure
+- ✅ Downlaod BrowseComp-Plus dataset from HuggingFace and set up the directory structure
 
 For more info about these deepresearch benchmarks, see [benchmarks.md](assets/docs/benchmarks.md) 
 
@@ -116,7 +116,7 @@ OPENAI_API_KEY=your_key        # Get from: https://platform.openai.com/api-keys
 
 ### Example 1: BrowseComp-Plus with Local Search Engine
 
-Complete evaluation using local Dense search (**note: only applicable for BrowserComp-Plus**):
+Complete evaluation using local Dense search (**note: only applicable for BrowseComp-Plus**):
 
 ```bash
 # Terminal 1: Start local Dense search service on port 8000
@@ -138,7 +138,7 @@ What this does:
 
 ### Example 2: GAIA with Serper API (No Local Search Needed)
 
-Run with Serper Google Search API (**note: applicable to all benchmarks except BrowserComp-Plus**):
+Run with Serper Google Search API (**note: applicable to all benchmarks except BrowseComp-Plus**):
 
 ```bash
 # Terminal 1: Start vLLM servers (requires 4 GPUs)
