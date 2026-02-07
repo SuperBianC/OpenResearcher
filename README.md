@@ -144,7 +144,7 @@ async def main():
         model_name="OpenResearcher/OpenResearcher-30B-A3B",
         use_native_tools=True
     )
-    browser_pool = BrowserPool(browser_backend="serper")
+    browser_pool = BrowserPool(search_url=None, browser_backend="serper")
 
     # Run deep research
     await run_one(
@@ -152,7 +152,6 @@ async def main():
         qid="quick_start",
         generator=generator,
         browser_pool=browser_pool,
-        verbose=True
     )
 
     browser_pool.cleanup("quick_start")
