@@ -22,6 +22,9 @@
 <img src="assets/imgs/notion.svg" width="15px" style="display:inline;"> <a href="https://boiled-honeycup-4c7.notion.site/OpenResearcher-A-Fully-Open-Pipeline-for-Long-Horizon-Deep-Research-Trajectory-Synthesis-2f7e290627b5800cb3a0cd7e8d6ec0ea?source=copy_link" target="_blank">Blog</a> ｜<img src="assets/imgs/slack.png" width="14px" style="display:inline;"> <a href="https://join.slack.com/t/openresearcher/shared_invite/zt-3p0r32cky-PqtZkVjjWIAI14~XwcRMfQ" target="_blank">Slack</a> | <img src="assets/imgs/wechat.svg" width="14px" style="display:inline;"> <a href="assets/imgs/wechat_group.jpg" target="_blank">WeChat</a> 
 </p>
 
+## 📣 News
++ **[2026.2.10]** 🚀 Our X [post](https://x.com/DongfuJiang/status/2020946549422031040) received **1K+** likes! Feel free to check out the post and join the discussion! 💬
+
 ## 💥 Introduction
 
 **OpenResearcher** is a fully open agentic large language model (30B-A3B) designed for **long-horizon deep research** scenarios. It achieves an impressive **54.8%** accuracy on [BrowseComp-Plus](https://huggingface.co/spaces/Tevatron/BrowseComp-Plus), surpassing performance of `GPT-4.1`, `Claude-Opus-4`, `Gemini-2.5-Pro`, `DeepSeek-R1` and `Tongyi-DeepResearch`. We **fully open-source** the training and evaluation recipe—including data, model, training methodology, and evaluation framework for everyone to progress deep research.
