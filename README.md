@@ -62,6 +62,7 @@
   - [Example 2: GAIA with Serper API (No Local Search Needed)](#example-2-gaia-with-serper-api-no-local-search-needed)
   - [Evaluation](#evaluation)
   - [Quick Commands](#quick-commands)
+- [🧪 (Optional) Train Your Own OpenResearcher](#optional-train-your-own-openresearcher)
 - [🤝 Core Contributors](#-core-contributors)
 - [🎓 Advisors](#-advisors)
 - [🙏 Acknowledgements](#-acknowledgements)
@@ -250,13 +251,13 @@ For script parameter explanation, refer to [parameter.md](assets/docs/parameter.
 python eval.py --input_dir [INPUT_DIR]
 ```
 
-## Training
+## 🧪 (Optional) Train Your Own OpenResearcher
 
-We use the [Megatron-LM](https://github.com/NVIDIA/Megatron-LM) to train our OpenResearcher-30B-A3B model. To get started, clone the `openresearcher` branch of the Megatron-LM repository:
+Our [OpenResearcher-30B-A3B](https://huggingface.co/OpenResearcher/OpenResearcher-30B-A3B) is trained using [Megatron-LM](https://github.com/NVIDIA/Megatron-LM) on [openresearcher-dataset](https://huggingface.co/datasets/OpenResearcher/OpenResearcher-Dataset). To get started, clone the `openresearcher` branch of the Megatron-LM repository:
 ```
 git clone -b openresearcher https://github.com/jdf/Megatron-LM.git
 ```
-Then follow the training instructions [here](https://github.com/jdf-prog/Megatron-LM/tree/openresearcher/examples/openresearcher) to train your own OpenResearcher model!
+Then, follow the training instructions [here](https://github.com/jdf-prog/Megatron-LM/tree/openresearcher/examples/openresearcher) to train your own OpenResearcher!
 
 ## 🤝 Core Contributors
 
