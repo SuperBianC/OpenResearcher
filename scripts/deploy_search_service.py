@@ -1,99 +1,18 @@
 import os
 import re
+import sys
 from typing import List, Dict, Any
+
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 from loguru import logger
-
-import os
-import re
-import glob
-from typing import List, Optional, Dict, Any
-from threading import Lock
-
-from fastapi import FastAPI, Query, HTTPException
-from pydantic import BaseModel, Field
-from loguru import logger
 import duckdb
-import sys
-import os
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from data_utils import setup_jar
 
-LUCENE_EXTRA_DIR = os.getenv("LUCENE_EXTRA_DIR")
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 MAX_SNIPPET_LEN = int(os.getenv("MAX_SNIPPET_LEN", "180"))
-setup_jar(LUCENE_EXTRA_DIR)
 
 from backend import Corpus, get_searcher, BaseSearcher
-from jnius import autoclass
-
-_ANALYZER = None
-_UH = None
-_QP = None
-_INIT_LOCK = Lock()
-
-_SMART_DBL_QUOTES = {
-    "“": '"',
-    "”": '"',
-    "„": '"',
-    "«": '"',
-    "»": '"',
-    "「": '"',
-    "」": '"',
-    "『": '"',
-    "』": '"',
-}
-
-def _drop_unpaired_quotes(q: str) -> str:
-    for k, v in _SMART_DBL_QUOTES.items():
-        q = q.replace(k, '"')
-    out, in_quote = [], False
-    for ch in q:
-        if ch == '"':
-            in_quote = not in_quote
-            out.append(ch)
-        else:
-            out.append(ch)
-    if in_quote:
-        # drop dangling quote(s)
-        return "".join(out).replace('"', "")
-    return "".join(out)
-
-def highlight_snippet_en(query: str, content: str, max_passages: int = 1) -> str:
-    """Use Lucene UnifiedHighlighter without searcher to highlight content."""
-    global _ANALYZER, _UH, _QP
-
-    if _ANALYZER is None:
-        with _INIT_LOCK:
-            if _ANALYZER is None:
-                StandardAnalyzer = autoclass(
-                    "org.apache.lucene.analysis.standard.StandardAnalyzer"
-                )
-                UnifiedHighlighter = autoclass(
-                    "org.apache.lucene.search.uhighlight.UnifiedHighlighter"
-                )
-                DefaultPassageFormatter = autoclass(
-                    "org.apache.lucene.search.uhighlight.DefaultPassageFormatter"
-                )
-                QueryParser = autoclass(
-                    "org.apache.lucene.queryparser.classic.QueryParser"
-                )
-
-                _ANALYZER = StandardAnalyzer()
-                fmt = DefaultPassageFormatter("", "", " … ", False)
-                _UH = (
-                    UnifiedHighlighter.builderWithoutSearcher(_ANALYZER)
-                    .withFormatter(fmt)
-                    .build()
-                )
-                _QP = QueryParser("content", _ANALYZER)
-
-    safe_query = _drop_unpaired_quotes(query)
-    q = _QP.parse(safe_query)
-    snippets = _UH.highlightWithoutSearcher("content", q, content, max_passages)
-    if snippets is None:
-        return content
-    return str(snippets).strip()
 
 
 PARQUET_PATH = os.getenv("CORPUS_PARQUET_PATH")
@@ -175,11 +94,7 @@ def search(request: SearchRequest):
             continue
         
         parsed = _parse_content(h.docid, h.text)
-        try:
-            summary = highlight_snippet_en(request.query, parsed["content"], max_passages=50)[:MAX_SNIPPET_LEN]
-        except Exception:
-            summary = parsed["content"][:MAX_SNIPPET_LEN]
-            
+        summary = parsed["content"][:MAX_SNIPPET_LEN]
 
         results.append(
             SearchResponseItem(

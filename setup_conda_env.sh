@@ -8,8 +8,6 @@
 # 前置要求:
 #   - conda 已安装
 #   - NVIDIA GPU + CUDA 驱动 (12.1+)
-#   - Java JDK 11+ (用于 pyserini / Lucene snippet highlighting)
-#     如未安装: sudo apt install -y openjdk-21-jdk
 # ─────────────────────────────────────────────────────────────
 set -e
 
@@ -43,8 +41,8 @@ echo "[3/4] Installing pip packages..."
 # --- PyTorch (CUDA 12.1) ---
 pip install torch --index-url https://download.pytorch.org/whl/cu121
 
-# --- FAISS GPU ---
-pip install faiss-gpu
+# --- FAISS GPU (PyPI 上没有 Python 3.12 版本，用 conda 安装) ---
+conda install -c pytorch faiss-gpu -y
 
 # --- Web service ---
 pip install "fastapi>=0.115.0" "uvicorn>=0.30.0" "pydantic>=2.0.0"
@@ -54,9 +52,6 @@ pip install "pyyaml>=6.0" "loguru>=0.7.0"
 
 # --- Corpus loading ---
 pip install "duckdb>=0.10.0"
-
-# --- BM25 / Lucene (also used for snippet highlighting in dense mode) ---
-pip install "pyserini>=0.22.0" "pyjnius>=1.6.0"
 
 # --- Embedding model ---
 pip install "transformers>=4.40.0" "accelerate>=0.30.0" "sentencepiece>=0.2.0"

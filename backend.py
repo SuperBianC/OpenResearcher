@@ -2,15 +2,10 @@ import glob, random, json, os, pickle
 from abc import ABC, abstractmethod
 from typing import Dict, List
 import duckdb
-import faiss
 import numpy as np
 import torch
 from loguru import logger
 from pydantic import BaseModel, Field
-from pyserini.search.lucene import LuceneSearcher
-from tevatron.retriever.arguments import ModelArguments
-from tevatron.retriever.driver.encode import DenseModel
-from tevatron.retriever.searcher import FaissFlatSearcher
 from tqdm import tqdm
 from transformers import AutoTokenizer
 
@@ -67,6 +62,7 @@ class BaseSearcher(ABC):
 class BM25Searcher(BaseSearcher):
     def __init__(self, index_path: str, corpus: Corpus):
         logger.info(f"Initializing BM25Searcher with index: {index_path}")
+        from pyserini.search.lucene import LuceneSearcher
         self.searcher = LuceneSearcher(index_path)
         self.corpus = corpus
 
@@ -109,6 +105,9 @@ class DenseSearcher(BaseSearcher):
         self.tokenizer = None
         self.lookup = []
 
+        from tevatron.retriever.searcher import FaissFlatSearcher
+        self._FaissFlatSearcher = FaissFlatSearcher
+
         logger.info("Initializing DenseSearcher...")
         self._load_faiss_index()
         self._load_model()
@@ -128,7 +127,7 @@ class DenseSearcher(BaseSearcher):
         p_reps_0, p_lookup_0 = pickle_load(index_files[0])
 
         # Create CPU index and add incrementally
-        self.retriever = FaissFlatSearcher(p_reps_0)
+        self.retriever = self._FaissFlatSearcher(p_reps_0)
         self.retriever.add(p_reps_0)
         self.lookup.extend(p_lookup_0)
 
@@ -147,6 +146,9 @@ class DenseSearcher(BaseSearcher):
         logger.info(f"FAISS index ready. ntotal={ntotal}")
 
     def _load_model(self) -> None:
+        from tevatron.retriever.arguments import ModelArguments
+        from tevatron.retriever.driver.encode import DenseModel
+
         logger.info(f"Loading model: {self.model_name}")
         model_args = ModelArguments(
             model_name_or_path=self.model_name,
