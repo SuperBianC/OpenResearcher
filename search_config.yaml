@@ -14,26 +14,26 @@ service:
 corpus:
   name: "BrowseComp-Plus"       # Display name shown in the UI
   # Supports glob patterns, e.g. /path/to/data/*.parquet
-  parquet_path: "/Users/bianhaiyang_ali/Documents/RLdataset/raw_dataset_bhy/Tevatron/browsecomp-plus-corpus/data/*.parquet"
+  parquet_path: "/data3/bianhaiyang/data/Tevatron/browsecomp-plus-corpus/data/*.parquet"
 
 # ── Retrieval engine ─────────────────────────────────────────
 engine:
-  type: "bm25"                  # "bm25"  →  keyword retrieval (no GPU needed)
+  type: "dense"                  # "bm25"  →  keyword retrieval (no GPU needed)
                                 # "dense" →  semantic retrieval (GPU required)
 
   # Settings for BM25 (only used when type: bm25)
   bm25:
-    index_dir: "/Users/bianhaiyang_ali/Documents/RLdataset/raw_dataset_bhy/Tevatron/browsecomp-plus-indexes/bm25"
+    index_dir: "/data3/bianhaiyang/data/Tevatron/browsecomp-plus-indexes/bm25"
 
   # Settings for Dense (only used when type: dense)
   dense:
-    index_path: "/Users/bianhaiyang_ali/Documents/RLdataset/raw_dataset_bhy/Tevatron/browsecomp-plus-indexes/qwen3-embedding-8b/*.pkl"
-    model_name: "Qwen/Qwen3-Embedding-8B"
-    gpu_ids: ["0"]              # List of GPU indices visible to the process
-    cuda_visible_devices: "0"   # Physical GPU to use (e.g. "7" for GPU 7)
+    index_path: "/data3/bianhaiyang/data/Tevatron/browsecomp-plus-indexes/qwen3-embedding-8b/*.pkl"
+    model_name: "/home/bianhaiyang/modelhub/Qwen/Qwen3-Embedding-8B"
+    gpu_ids: ["1", "2", "7"]              # List of GPU indices visible to the process
+    cuda_visible_devices: "1,2,7"         # Physical GPUs to use (comma-separated, e.g. "1,2,7" for GPUs 1, 2, and 7)
 
 # ── Lucene JARs (needed by both BM25 and snippet highlighting) ─
 lucene:
   # Directory containing lucene-highlighter/queries/memory *.jar files
   # These are downloaded by setup.sh into the tevatron/ subfolder.
-  extra_dir: "/Users/bianhaiyang_ali/projects/OpenResearcher/tevatron"
+  extra_dir: "/home/bianhaiyang/offsearch/OpenResearcher/tevatron"
