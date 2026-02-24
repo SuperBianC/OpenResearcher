@@ -14,7 +14,6 @@ import re
 import sys
 import glob
 from pathlib import Path
-from threading import Lock
 from typing import Dict, List, Any
 
 import yaml
@@ -38,7 +37,7 @@ _corpus = _cfg["corpus"]
 _engine = _cfg["engine"]
 _lucene = _cfg.get("lucene", {})
 
-# ── Set environment variables BEFORE importing jnius / backend ────────────────
+# ── Set environment variables BEFORE importing backend ─────────────────────────
 ENGINE_TYPE      = _engine["type"].lower()
 CORPUS_NAME      = _corpus.get("name", "Custom Corpus")
 MAX_SNIPPET_LEN  = int(_svc.get("max_snippet_len", 300))
@@ -60,18 +59,15 @@ elif ENGINE_TYPE == "dense":
 else:
     raise ValueError(f"Unknown engine type: {ENGINE_TYPE!r}. Must be 'bm25' or 'dense'.")
 
-# ── Lucene JARs (must happen before any jnius import) ────────────────────────
-# setup_jar only needs: pyserini + pyjnius — no torch/faiss/tevatron required
-from data_utils import setup_jar
-setup_jar(LUCENE_EXTRA_DIR)
-
-from jnius import autoclass
-
 # ── Conditional backend import: BM25 uses a lightweight inline impl ───────────
 # backend.py imports torch/faiss/tevatron/transformers at the TOP LEVEL even
 # for BM25 mode — we bypass it entirely when engine == bm25.
 if ENGINE_TYPE == "bm25":
-    # ── Minimal inline BM25 backend (deps: duckdb + pyserini only) ───────────
+    # ── Lucene JARs (must happen before any jnius import) ────────────────────
+    from data_utils import setup_jar
+    setup_jar(LUCENE_EXTRA_DIR)
+
+    # ── Minimal inline BM25 backend (deps: duckdb + pyserini + Java) ─────────
     import glob as _glob
     import duckdb as _duckdb
     from abc import ABC, abstractmethod
@@ -132,48 +128,6 @@ else:
     # Install: pip install torch faiss-cpu transformers
     #          git clone https://github.com/texttron/tevatron && pip install -e tevatron/
     from backend import Corpus, get_searcher as _build_searcher, BaseSearcher, SearchResult
-
-# ── Lucene UnifiedHighlighter (for snippet generation) ───────────────────────
-_ANALYZER   = None
-_UH         = None
-_QP         = None
-_INIT_LOCK  = Lock()
-
-_SMART_QUOTES = {
-    "\u201c": '"', "\u201d": '"', "\u201e": '"',
-    "\u00ab": '"', "\u00bb": '"',
-    "\u300c": '"', "\u300d": '"', "\u300e": '"', "\u300f": '"',
-}
-
-def _drop_unpaired_quotes(q: str) -> str:
-    for k, v in _SMART_QUOTES.items():
-        q = q.replace(k, '"')
-    out, in_q = [], False
-    for ch in q:
-        if ch == '"':
-            in_q = not in_q
-        out.append(ch)
-    return "".join(out) if not in_q else "".join(out).replace('"', "")
-
-def _highlight(query: str, content: str, max_passages: int = 50) -> str:
-    global _ANALYZER, _UH, _QP
-    if _ANALYZER is None:
-        with _INIT_LOCK:
-            if _ANALYZER is None:
-                SA  = autoclass("org.apache.lucene.analysis.standard.StandardAnalyzer")
-                UH  = autoclass("org.apache.lucene.search.uhighlight.UnifiedHighlighter")
-                DPF = autoclass("org.apache.lucene.search.uhighlight.DefaultPassageFormatter")
-                QP  = autoclass("org.apache.lucene.queryparser.classic.QueryParser")
-                _ANALYZER = SA()
-                fmt = DPF("<mark>", "</mark>", " … ", True)  # True = HTML-escape body, keep <mark> tags raw
-                _UH = UH.builderWithoutSearcher(_ANALYZER).withFormatter(fmt).build()
-                _QP = QP("content", _ANALYZER)
-    try:
-        q = _QP.parse(_drop_unpaired_quotes(query))
-        s = _UH.highlightWithoutSearcher("content", q, content, max_passages)
-        return str(s).strip() if s else content
-    except Exception:
-        return content
 
 # ── Document front-matter parser ─────────────────────────────────────────────
 _FM = re.compile(
@@ -448,8 +402,7 @@ function renderResults(data) {
       <div class="rurl"  title="${h(item.url)}">${h(item.url)}</div>
       <div class="rsnip">${item.summary}</div>
     `;
-    /* item.summary is safe: Lucene HTML-escapes the body text (escape=True),
-       only the <mark>…</mark> tags are kept raw for highlighting */
+    /* item.summary is plain-text truncated from the document body */
     card.addEventListener('click', () => viewDoc(item, card.id));
     rl.appendChild(card);
   });
@@ -564,10 +517,7 @@ def api_search(req: SearchRequest):
         if not url:
             continue
         parsed  = _parse(h.docid, h.text)
-        try:
-            summary = _highlight(req.query, parsed["content"])[:MAX_SNIPPET_LEN]
-        except Exception:
-            summary = parsed["content"][:MAX_SNIPPET_LEN]
+        summary = parsed["content"][:MAX_SNIPPET_LEN]
         results.append(SearchItem(url=url, title=parsed["title"], summary=summary))
     return {"query": req.query, "count": len(results), "results": results}
 

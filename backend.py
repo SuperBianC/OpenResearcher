@@ -119,23 +119,21 @@ class DenseSearcher(BaseSearcher):
                 reps, lookup = pickle.load(f)
             return np.array(reps, dtype=np.float32), lookup
 
-        index_files = glob.glob(self.index_path_pattern)
+        index_files = sorted(glob.glob(self.index_path_pattern))
         if not index_files:
             raise ValueError(f"No files found matching pattern: {self.index_path_pattern}")
 
-        logger.info(f'Found {len(index_files)} shards; loading into index.')
-        p_reps_0, p_lookup_0 = pickle_load(index_files[0])
-
-        # Create CPU index and add incrementally
-        self.retriever = self._FaissFlatSearcher(p_reps_0)
-        self.retriever.add(p_reps_0)
-        self.lookup.extend(p_lookup_0)
-
-        if len(index_files) > 1:
-            for f in tqdm(index_files[1:], desc='Loading shards'):
-                p_reps, p_lookup = pickle_load(f)
-                self.retriever.add(p_reps)
-                self.lookup.extend(p_lookup)
+        logger.info(f'Found {len(index_files)} shard(s); loading into FAISS index.')
+        for i, f in enumerate(tqdm(index_files, desc='Loading shards')):
+            size_gb = os.path.getsize(f) / 1e9
+            logger.info(f'  Shard {i+1}/{len(index_files)}: {f}  ({size_gb:.2f} GB) — unpickling...')
+            p_reps, p_lookup = pickle_load(f)
+            logger.info(f'  Shard {i+1}/{len(index_files)}: {len(p_lookup):,} vectors loaded, adding to index...')
+            if i == 0:
+                self.retriever = self._FaissFlatSearcher(p_reps)
+            self.retriever.add(p_reps)
+            self.lookup.extend(p_lookup)
+            logger.info(f'  Shard {i+1}/{len(index_files)}: done. Index ntotal={self.retriever.index.ntotal:,}')
 
         ntotal = self.retriever.index.ntotal
         if ntotal != len(self.lookup):

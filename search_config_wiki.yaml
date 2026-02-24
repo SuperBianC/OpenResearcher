@@ -12,9 +12,9 @@ service:
 
 # ── Corpus (Parquet files: docid / url / text) ───────────────
 corpus:
-  name: "BrowseComp-Plus"       # Display name shown in the UI
+  name: "openresearcher-fineweb"       # Display name shown in the UI
   # Supports glob patterns, e.g. /path/to/data/*.parquet
-  parquet_path: "/data3/bianhaiyang/data/Tevatron/browsecomp-plus-corpus/data/*.parquet"
+  parquet_path: "/data3/bianhaiyang/data/OpenResearcher/OpenResearcher-Corpus/data/*.parquet"
 
 # ── Retrieval engine ─────────────────────────────────────────
 engine:
@@ -27,7 +27,7 @@ engine:
 
   # Settings for Dense (only used when type: dense)
   dense:
-    index_path: "/data3/bianhaiyang/data/Tevatron/browsecomp-plus-indexes/qwen3-embedding-8b/*.pkl"
+    index_path: "/data3/bianhaiyang/data/OpenResearcher/OpenResearcher-Indexes/qwen3-embedding-8b/*.pkl"
     model_name: "/home/bianhaiyang/modelhub/Qwen/Qwen3-Embedding-8B"
     gpu_ids: ["0", "1", "2"]              # Logical indices after CUDA_VISIBLE_DEVICES remapping (always start from 0)
     cuda_visible_devices: "1,2,7"         # Physical GPUs to use (comma-separated). These become logical 0,1,2 inside the process.
