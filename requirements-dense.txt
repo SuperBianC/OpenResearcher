@@ -1,0 +1,51 @@
+# ─────────────────────────────────────────────────────────────
+# requirements-dense.txt
+# Offline Search Service — Dense mode (CUDA GPU required)
+#
+# Install:
+#   pip install -r requirements-dense.txt
+#
+# Also required (not pip-installable):
+#   1. Java JDK 11+  (for Lucene snippet highlighting)
+#   2. 3 Lucene JARs in lucene.extra_dir (see search_config.yaml)
+#   3. tevatron from source:
+#        git clone https://github.com/texttron/tevatron.git
+#        pip install -e tevatron/
+#   4. NVIDIA GPU with CUDA 12.1+ (for Qwen3-Embedding-8B inference)
+#   5. Qwen3-Embedding-8B model weights (local path or HuggingFace)
+# ─────────────────────────────────────────────────────────────
+
+# Web service
+fastapi>=0.115.0
+uvicorn>=0.30.0
+pydantic>=2.0.0
+
+# Config & logging
+pyyaml>=6.0
+loguru>=0.7.0
+
+# Corpus loading (Parquet)
+duckdb>=0.10.0
+
+# BM25 + Lucene (also used for snippet highlighting in dense mode)
+pyserini>=0.22.0
+pyjnius>=1.6.0
+
+# Dense retrieval — GPU inference
+# For CUDA 12.1:
+torch>=2.3.0
+# Install with: pip install torch --index-url https://download.pytorch.org/whl/cu121
+
+# Vector index
+faiss-gpu>=1.7.4
+# If no GPU build available: faiss-cpu>=1.7.4
+
+# Embedding model loading
+transformers>=4.40.0
+accelerate>=0.30.0
+sentencepiece>=0.2.0
+
+# tevatron dependencies (installed when you do: pip install -e tevatron/)
+qwen-omni-utils>=0.0.8
+tqdm>=4.66.0
+numpy>=1.26.0

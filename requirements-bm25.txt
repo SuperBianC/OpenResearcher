@@ -1,0 +1,30 @@
+# ─────────────────────────────────────────────────────────────
+# requirements-bm25.txt
+# Offline Search Service — BM25 mode only (no GPU needed)
+#
+# Install:
+#   pip install -r requirements-bm25.txt
+#
+# Also required (not pip-installable):
+#   - Java JDK 11+  (brew install openjdk@21 on macOS)
+#   - 3 Lucene JARs in lucene.extra_dir (see search_config.yaml)
+#   - Set env: JAVA_HOME, JVM_PATH (see scripts/start_search_webui.sh)
+# ─────────────────────────────────────────────────────────────
+
+# Web service
+fastapi>=0.115.0
+uvicorn>=0.30.0
+pydantic>=2.0.0
+
+# Config & logging
+pyyaml>=6.0
+loguru>=0.7.0
+
+# Corpus loading (Parquet)
+duckdb>=0.10.0
+
+# BM25 search via Lucene (requires Java JDK)
+pyserini>=0.22.0
+
+# Python ↔ Java bridge (comes with pyserini, listed explicitly)
+pyjnius>=1.6.0
