@@ -94,7 +94,7 @@ def search(request: SearchRequest):
             continue
         
         parsed = _parse_content(h.docid, h.text)
-        summary = parsed["content"][:MAX_SNIPPET_LEN]
+            summary = parsed["content"][:MAX_SNIPPET_LEN]
 
         results.append(
             SearchResponseItem(

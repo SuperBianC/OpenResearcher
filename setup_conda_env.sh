@@ -39,7 +39,7 @@ echo "  Python: $(which python) ($(python --version))"
 echo "[3/4] Installing pip packages..."
 
 # --- PyTorch (CUDA 12.1) ---
-pip install torch --index-url https://download.pytorch.org/whl/cu121
+pip install torch
 
 # --- FAISS GPU (PyPI 上没有 Python 3.12 版本，用 conda 安装) ---
 conda install -c pytorch faiss-gpu -y

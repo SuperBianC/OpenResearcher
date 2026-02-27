@@ -114,6 +114,53 @@ class DenseSearcher(BaseSearcher):
         logger.info("DenseSearcher initialized successfully.")
 
     def _load_faiss_index(self) -> None:
+        import faiss as _faiss
+
+        # ── Thin wrapper so self.retriever.search() works regardless of source ──
+        class _NativeRetriever:
+            def __init__(self, index):
+                self.index = index
+            def search(self, q_reps, k):
+                return self.index.search(q_reps.astype(np.float32), k)
+
+        # ── Prefer native .faiss + _lookup.json (fast mmap / binary load) ───────
+        faiss_pat  = self.index_path_pattern.replace('.pkl', '.faiss')
+        lookup_pat = self.index_path_pattern.replace('.pkl', '_lookup.json')
+        faiss_files  = sorted(glob.glob(faiss_pat))
+        lookup_files = sorted(glob.glob(lookup_pat))
+
+        if faiss_files and len(faiss_files) == len(lookup_files):
+            logger.info(f'Found {len(faiss_files)} native .faiss shard(s); loading into RAM.')
+            merged_index = None
+            for i, (ff, lf) in enumerate(tqdm(zip(faiss_files, lookup_files),
+                                               total=len(faiss_files),
+                                               desc='Loading shards (.faiss)')):
+                size_gb = os.path.getsize(ff) / 1e9
+                logger.info(f'  Shard {i+1}/{len(faiss_files)}: {ff} ({size_gb:.2f} GB) — reading...')
+                shard_idx = _faiss.read_index(ff)
+                logger.info(f'  Shard {i+1}/{len(faiss_files)}: ntotal={shard_idx.ntotal:,} — loaded')
+
+                with open(lf, 'r') as jf:
+                    self.lookup.extend(json.load(jf))
+
+                if merged_index is None:
+                    merged_index = shard_idx
+                else:
+                    # For IndexFlat, reconstruct all vectors from this shard and add
+                    vecs = shard_idx.reconstruct_n(0, shard_idx.ntotal)
+                    merged_index.add(vecs)
+
+            self.retriever = _NativeRetriever(merged_index)
+            ntotal = self.retriever.index.ntotal
+            if ntotal != len(self.lookup):
+                raise RuntimeError(
+                    f"FAISS index/lookup mismatch: ntotal={ntotal}, lookup_len={len(self.lookup)}. "
+                    "Check shard loading or lookup building."
+                )
+            logger.info(f"FAISS index ready (native). ntotal={ntotal:,}, lookup={len(self.lookup):,}")
+            return
+
+        # ── Fall back to pickle format ───────────────────────────────────────────
         def pickle_load(path):
             with open(path, 'rb') as f:
                 reps, lookup = pickle.load(f)
@@ -121,12 +168,15 @@ class DenseSearcher(BaseSearcher):
 
         index_files = sorted(glob.glob(self.index_path_pattern))
         if not index_files:
-            raise ValueError(f"No files found matching pattern: {self.index_path_pattern}")
+            raise ValueError(f"No index files found. Checked patterns:\n"
+                             f"  .faiss : {faiss_pat}\n"
+                             f"  .pkl   : {self.index_path_pattern}")
 
-        logger.info(f'Found {len(index_files)} shard(s); loading into FAISS index.')
-        for i, f in enumerate(tqdm(index_files, desc='Loading shards')):
+        logger.info(f'No .faiss files found; falling back to pickle. '
+                    f'Found {len(index_files)} shard(s).')
+        for i, f in enumerate(tqdm(index_files, desc='Loading shards (.pkl)')):
             size_gb = os.path.getsize(f) / 1e9
-            logger.info(f'  Shard {i+1}/{len(index_files)}: {f}  ({size_gb:.2f} GB) — unpickling...')
+            logger.info(f'  Shard {i+1}/{len(index_files)}: {f} ({size_gb:.2f} GB) — unpickling...')
             p_reps, p_lookup = pickle_load(f)
             logger.info(f'  Shard {i+1}/{len(index_files)}: {len(p_lookup):,} vectors loaded, adding to index...')
             if i == 0:
@@ -141,7 +191,7 @@ class DenseSearcher(BaseSearcher):
                 f"FAISS index/lookup mismatch: ntotal={ntotal}, lookup_len={len(self.lookup)}. "
                 "Check shard loading or lookup building."
             )
-        logger.info(f"FAISS index ready. ntotal={ntotal}")
+        logger.info(f"FAISS index ready (pickle). ntotal={ntotal:,}")
 
     def _load_model(self) -> None:
         from tevatron.retriever.arguments import ModelArguments
