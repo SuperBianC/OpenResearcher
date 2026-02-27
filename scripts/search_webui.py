@@ -517,7 +517,7 @@ def api_search(req: SearchRequest):
         if not url:
             continue
         parsed  = _parse(h.docid, h.text)
-            summary = parsed["content"][:MAX_SNIPPET_LEN]
+        summary = parsed["content"][:MAX_SNIPPET_LEN]
         results.append(SearchItem(url=url, title=parsed["title"], summary=summary))
     return {"query": req.query, "count": len(results), "results": results}
 
