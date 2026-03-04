@@ -29,8 +29,8 @@ engine:
   dense:
     index_path: "/mnt/fk-data/moe/bianhaiyang/data/agent/Tevatron/browsecomp-plus-indexes/qwen3-embedding-8b/*.pkl"
     model_name: "/mnt/fk-data/moe/bianhaiyang/model/Qwen/Qwen3-Embedding-8B"
-    gpu_ids: ["0", "1", "2"]              # Logical indices after CUDA_VISIBLE_DEVICES remapping (always start from 0)
-    cuda_visible_devices: "1,2,7"         # Physical GPUs to use (comma-separated). These become logical 0,1,2 inside the process.
+    gpu_ids: ["0"]              # Logical indices after CUDA_VISIBLE_DEVICES remapping (always start from 0)
+    cuda_visible_devices: "0"         # Physical GPUs to use (comma-separated). These become logical 0,1,2 inside the process.
 
 # ── Lucene JARs (needed by both BM25 and snippet highlighting) ─
 lucene:
